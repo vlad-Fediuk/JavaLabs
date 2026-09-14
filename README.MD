@@ -1,21 +1,24 @@
-# Student Journal
+# 🎓 Student Journal
 
-A simple console application for managing students and their grades.
+## 📌 Domain Entities
 
-## Entities
+* **`Student`** — Represents a student and their identifying details.
+* **`Subject`** — Handles course information, lesson quotas, and grading criteria.
+* **`GradeReport`** — Aggregates attendance metrics, exam scores, and pass/fail evaluation.
 
-Student
-Subject
+---
 
-## Requirements
+## ⚙️ Requirements
 
-- Java 25 or later
+* **Java SDK:** `25` or higher
 
-## Compilation and running
+---
 
-Run these commands from the project root directory:
+## 🚀 Quick Start
 
+Run the following commands from the project root directory:
+
+### **PowerShell (Windows)**
 ```powershell
 javac -d out src\*.java
-java -cp out Lab
-```
+java -cp out Main
