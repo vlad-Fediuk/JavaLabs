@@ -13,14 +13,6 @@ public class Attendance {
         return wasPresent;
     }
 
-    public String getSubject() {
-        return subject;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
     @Override
     public String toString() {
         return "Дата: " + date + " | Предмет: " + subject + " | Присутність: " + (wasPresent ? "Був" : "Не був");

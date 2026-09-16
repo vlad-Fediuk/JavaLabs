@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Student {
@@ -13,13 +12,6 @@ public class Student {
         this.group = group;
         this.attendances = new ArrayList<>();
         this.grades = new ArrayList<>();
-    }
-
-    public Student(String name, String group, List<Attendance> attendances, List<Grade> grades) {
-        this.name = name;
-        this.group = group;
-        this.attendances = (attendances != null) ? new ArrayList<>(attendances) : new ArrayList<>();
-        this.grades = (grades != null) ? new ArrayList<>(grades) : new ArrayList<>();
     }
 
     public String getName() {
@@ -75,10 +67,5 @@ public class Student {
         if (obj == null || getClass() != obj.getClass()) return false;
         Student other = (Student) obj;
         return Objects.equals(this.name, other.name) && Objects.equals(this.group, other.group);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, group);
     }
 }
