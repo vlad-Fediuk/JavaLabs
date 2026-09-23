@@ -53,34 +53,50 @@ public class Main {
                         System.out.println("Аяяй! Список студентів порожній. Спочатку додайте хоча б одного!");
                         break;
                     }
-                    Student st = chooseStudent(scanner, students);
-                    String sub = chooseSubject(scanner, subjects);
-                    addGrade(scanner, st, todayDate, sub);
+                    try {
+                        Student st = chooseStudent(scanner, students);
+                        String sub = chooseSubject(scanner, subjects);
+                        addGradeWithHandling(scanner, st, todayDate, sub);
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Аяяй! Зазначеного індексу не існує в системі!");
+                    }
                 }
                 case 4 -> {
                     if (students.isEmpty()) {
                         System.out.println("Аяяй! Список студентів порожній!");
                         break;
                     }
-                    Student st = chooseStudent(scanner, students);
-                    showStudentGrades(st);
+                    try {
+                        Student st = chooseStudent(scanner, students);
+                        showStudentGrades(st);
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Аяяй! Індекс студента виходить за межі списку!");
+                    }
                 }
                 case 5 -> {
                     if (students.isEmpty()) {
                         System.out.println("Аяяй! Список студентів порожній!");
                         break;
                     }
-                    Student st = chooseStudent(scanner, students);
-                    String sub = chooseSubject(scanner, subjects);
-                    addAttendance(scanner, st, todayDate, sub);
+                    try {
+                        Student st = chooseStudent(scanner, students);
+                        String sub = chooseSubject(scanner, subjects);
+                        addAttendance(scanner, st, todayDate, sub);
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Аяяй! Зазначений індекс недоступний!");
+                    }
                 }
                 case 6 -> {
                     if (students.isEmpty()) {
                         System.out.println("Аяяй! Список студентів порожній!");
                         break;
                     }
-                    Student st = chooseStudent(scanner, students);
-                    showStudentAttendances(st);
+                    try {
+                        Student st = chooseStudent(scanner, students);
+                        showStudentAttendances(st);
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Аяяй! Зазначений індекс недоступний!");
+                    }
                 }
                 case 7 -> sortStudents(students);
                 case 8 -> showSummary(students);
@@ -113,7 +129,10 @@ public class Main {
 
     public static Student chooseStudent(Scanner scanner, ArrayList<Student> students) {
         showAllStudents(students);
-        int index = readIntInRange(scanner, "Введіть індекс студента: ", 0, students.size() - 1);
+        int index = readInt(scanner, "Введіть індекс студента: ");
+        if (index < 0 || index >= students.size()) {
+            throw new IndexOutOfBoundsException("Некоректний індекс студента: " + index);
+        }
         return students.get(index);
     }
 
@@ -122,16 +141,42 @@ public class Main {
         for (int i = 0; i < subjects.size(); i++) {
             System.out.println("[" + i + "] " + subjects.get(i));
         }
-        int index = readIntInRange(scanner, "Введіть індекс предмета: ", 0, subjects.size() - 1);
+        int index = readInt(scanner, "Введіть індекс предмета: ");
+        if (index < 0 || index >= subjects.size()) {
+            throw new IndexOutOfBoundsException("Некоректний індекс предмета: " + index);
+        }
         return subjects.get(index);
     }
 
-    public static void addGrade(Scanner scanner, Student student, String todayDate, String subject) {
-        double score = readDoubleInRange(scanner, "Введіть бал (від 0 до 100): ", 0.0, 100.0);
+    public static void addGradeWithHandling(Scanner scanner, Student student, String todayDate, String subject) {
+        System.out.print("Введіть бал (від 0 до 100): ");
+        String scoreRaw = scanner.nextLine().trim().replace(',', '.');
         String type = readNonEmptyString(scanner, "Введіть тип оцінювання (Практика, Тест, Лабораторна): ");
 
-        student.addGrade(new Grade(score, subject, todayDate, type));
-        System.out.println("Оцінку успішно додано!");
+        try {
+            double score = Double.parseDouble(scoreRaw);
+            registerGrade(student, score, subject, todayDate, type);
+            System.out.println("Оцінку успішно додано!");
+        } catch (InvalidGradeException e) {
+            System.out.println("Аяяй! " + e.getMessage() + "! (Зафіксовано значення: " + e.getInvalidScore() + ")");
+        } catch (JournalException e) {
+            System.out.println("Аяяй! Загальна помилка журналу: " + e.getMessage() + "!");
+        } catch (NumberFormatException e) {
+            System.out.println("Аяяй! Потрібно ввести число (наприклад 85 або 74.5), а не текст чи сміття: '" + scoreRaw + "'!");
+        } finally {
+            System.out.println("[Аудит операції]: Завершено спробу додавання оцінки для студента " + student.getName() + "!");
+        }
+    }
+
+    public static void registerGrade(Student student, double score, String subject, String todayDate, String type)
+            throws JournalException {
+        try {
+            Grade grade = new Grade(score, subject, todayDate, type);
+            student.addGrade(grade);
+        } catch (InvalidGradeException e) {
+            System.out.println("[Внутрішній журнал/Лог]: Аяяй! Виявлено порушення правила оцінювання! Значення: " + e.getInvalidScore());
+            throw e;
+        }
     }
 
     public static void addAttendance(Scanner scanner, Student student, String todayDate, String subject) {
@@ -208,22 +253,26 @@ public class Main {
         String name = readNonEmptyString(scanner, "Введіть ПІБ для пошуку: ");
         String group = readNonEmptyString(scanner, "Введіть групу для пошуку: ");
 
-        Student target = new Student(name, group);
-        int foundIndex = -1;
+        try {
+            Student found = findStudent(students, name, group);
+            System.out.println("\nСтудента успішно знайдено:");
+            System.out.println(found);
+        } catch (StudentNotFoundException e) {
+            System.out.println("Аяяй! " + e.getMessage() + "! (Критерій: " + e.getSearchTarget() + ")");
+        } catch (JournalException e) {
+            System.out.println("Аяяй! Загальна помилка журналу: " + e.getMessage() + "!");
+        }
+    }
 
-        for (int i = 0; i < students.size(); i++) {
-            if (target.equals(students.get(i))) {
-                foundIndex = i;
-                break;
+    public static Student findStudent(ArrayList<Student> students, String name, String group)
+            throws JournalException {
+        Student target = new Student(name, group);
+        for (Student s : students) {
+            if (target.equals(s)) {
+                return s;
             }
         }
-
-        if (foundIndex != -1) {
-            System.out.println("\nСтудента знайдено за індексом [" + foundIndex + "]:");
-            System.out.println(students.get(foundIndex));
-        } else {
-            System.out.println("\nСтудента з такими даними не знайдено.");
-        }
+        throw new StudentNotFoundException("Студента не знайдено в базі даних", name + " (" + group + ")");
     }
 
     public static String readNonEmptyString(Scanner scanner, String prompt) {
@@ -237,36 +286,14 @@ public class Main {
         }
     }
 
-    public static int readIntInRange(Scanner scanner, String prompt, int min, int max) {
+    public static int readInt(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
             try {
-                int val = Integer.parseInt(input);
-                if (val < min || val > max) {
-                    System.out.println("Аяяй! Число має бути від " + min + " до " + max + " (ніяких від'ємних чи неіснуючих індексів)!");
-                    continue;
-                }
-                return val;
+                return Integer.parseInt(input);
             } catch (NumberFormatException e) {
                 System.out.println("Аяяй! Ви ввели текст замість цілого числа!");
-            }
-        }
-    }
-
-    public static double readDoubleInRange(Scanner scanner, String prompt, double min, double max) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine().trim().replace(',', '.');
-            try {
-                double val = Double.parseDouble(input);
-                if (val < min || val > max) {
-                    System.out.println("Аяяй! Бал не може бути від'ємним чи більшим за " + (int) max + "!");
-                    continue;
-                }
-                return val;
-            } catch (NumberFormatException e) {
-                System.out.println("Аяяй! Потрібно ввести число (наприклад 85 або 74.5), а не текст!");
             }
         }
     }

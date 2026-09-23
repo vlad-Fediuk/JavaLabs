@@ -39,7 +39,9 @@ public class Student {
     }
 
     public double getAverageGrade() {
-        if (grades.isEmpty()) return 0.0;
+        if (grades.isEmpty()) {
+            return 0.0;
+        }
         double sum = 0;
         for (Grade g : grades) {
             sum += g.getValue();
@@ -50,7 +52,9 @@ public class Student {
     public int getAttendedCount() {
         int count = 0;
         for (Attendance a : attendances) {
-            if (a.isWasPresent()) count++;
+            if (a.isWasPresent()) {
+                count++;
+            }
         }
         return count;
     }
@@ -63,8 +67,12 @@ public class Student {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         Student other = (Student) obj;
         return Objects.equals(this.name, other.name) && Objects.equals(this.group, other.group);
     }

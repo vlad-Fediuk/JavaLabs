@@ -4,7 +4,10 @@ public class Grade {
     private String date;
     private String type;
 
-    public Grade(double value, String subject, String date, String type) {
+    public Grade(double value, String subject, String date, String type) throws InvalidGradeException {
+        if (value < 0.0 || value > 100.0) {
+            throw new InvalidGradeException("Бал оцінки має бути в діапазоні від 0 до 100", value);
+        }
         this.value = value;
         this.subject = subject;
         this.date = date;
