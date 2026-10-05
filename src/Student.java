@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Student {
-    private String name;
-    private String group;
-    private ArrayList<Attendance> attendances;
-    private ArrayList<Grade> grades;
+public class Student implements Comparable<Student>, Auditable {
+    private final String name;
+    private final String group;
+    private final ArrayList<Attendance> attendances;
+    private final ArrayList<GradedWork> grades;
 
     public Student(String name, String group) {
         this.name = name;
@@ -26,7 +26,7 @@ public class Student {
         return attendances;
     }
 
-    public ArrayList<Grade> getGrades() {
+    public ArrayList<GradedWork> getGradedWorks() {
         return grades;
     }
 
@@ -34,7 +34,7 @@ public class Student {
         this.attendances.add(attendance);
     }
 
-    public void addGrade(Grade grade) {
+    public void addGrade(GradedWork grade) {
         this.grades.add(grade);
     }
 
@@ -42,9 +42,9 @@ public class Student {
         if (grades.isEmpty()) {
             return 0.0;
         }
-        double sum = 0;
-        for (Grade g : grades) {
-            sum += g.getValue();
+        double sum = 0.0;
+        for (GradedWork g : grades) {
+            sum += g.getEffectiveScore();
         }
         return sum / grades.size();
     }
@@ -57,6 +57,17 @@ public class Student {
             }
         }
         return count;
+    }
+
+    @Override
+    public int compareTo(Student other) {
+        return Double.compare(other.getAverageGrade(), this.getAverageGrade());
+    }
+
+    @Override
+    public String getAuditSummary() {
+        return String.format("Студент %s (%s): %d занять, %d робіт, сер. бал: %.2f",
+                name, group, attendances.size(), grades.size(), getAverageGrade());
     }
 
     @Override
@@ -75,5 +86,10 @@ public class Student {
         }
         Student other = (Student) obj;
         return Objects.equals(this.name, other.name) && Objects.equals(this.group, other.group);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, group);
     }
 }
