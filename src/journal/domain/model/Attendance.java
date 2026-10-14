@@ -1,9 +1,11 @@
-public class Attendance {
-    private boolean wasPresent;
-    private String subject;
-    private String date;
+package journal.domain.model;
 
-    public Attendance(boolean wasPresent, String subject, String date) {
+public class Attendance {
+    private final boolean wasPresent;
+    private final Subject subject;
+    private final String date;
+
+    public Attendance(boolean wasPresent, Subject subject, String date) {
         this.wasPresent = wasPresent;
         this.subject = subject;
         this.date = date;
@@ -13,7 +15,7 @@ public class Attendance {
         return wasPresent;
     }
 
-    public String getSubject() {
+    public Subject getSubject() {
         return subject;
     }
 

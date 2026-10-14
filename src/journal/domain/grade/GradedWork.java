@@ -1,3 +1,7 @@
+package journal.domain.grade;
+
+import journal.domain.model.Attendance;
+
 public interface GradedWork {
     double getRawValue();
 

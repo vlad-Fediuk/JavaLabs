@@ -1,7 +1,16 @@
+package journal.strategy;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import journal.domain.grade.ExamGrade;
+import journal.domain.grade.GradedWork;
+import journal.domain.model.Student;
+
 public class ExamPriorityStrategy implements GradingStrategy {
+    public static final double EXAM_WEIGHT = 0.7;
+    public static final double REGULAR_WEIGHT = 0.3;
+
     @Override
     public double calculateFinalScore(Student student) {
         List<GradedWork> works = student.getGradedWorks();
@@ -25,7 +34,7 @@ public class ExamPriorityStrategy implements GradingStrategy {
         }
 
         double examScore = exam.getRawValue();
-        double regularScore = 0.0;
+        double regularScore;
 
         if (!regularWorks.isEmpty()) {
             double sum = 0.0;
@@ -37,7 +46,7 @@ public class ExamPriorityStrategy implements GradingStrategy {
             regularScore = examScore;
         }
 
-        return (examScore * 0.7) + (regularScore * 0.3);
+        return (examScore * EXAM_WEIGHT) + (regularScore * REGULAR_WEIGHT);
     }
 
     @Override

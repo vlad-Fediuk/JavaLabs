@@ -1,4 +1,9 @@
+package journal.strategy;
+
 import java.util.List;
+
+import journal.domain.grade.GradedWork;
+import journal.domain.model.Student;
 
 public class AmnestyStrategy implements GradingStrategy {
     @Override

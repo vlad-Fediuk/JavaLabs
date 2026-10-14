@@ -1,11 +1,20 @@
+package journal.domain.grade;
+
+import journal.domain.model.Attendance;
+import journal.domain.model.Subject;
+import journal.exception.InvalidGradeException;
+
 public abstract class AbstractGrade implements GradedWork {
+    public static final double MIN_SCORE = 0.0;
+    public static final double MAX_SCORE = 100.0;
+
     private final double value;
     private final Attendance attendance;
-    private final String subject;
+    private final Subject subject;
 
-    public AbstractGrade(double value, Attendance attendance, String subject) throws InvalidGradeException {
-        if (value < 0.0 || value > 100.0) {
-            throw new InvalidGradeException("Бал оцінки має бути в діапазоні від 0 до 100", value);
+    public AbstractGrade(double value, Attendance attendance, Subject subject) throws InvalidGradeException {
+        if (value < MIN_SCORE || value > MAX_SCORE) {
+            throw new InvalidGradeException("Бал оцінки має бути в діапазоні від " + MIN_SCORE + " до " + MAX_SCORE, value);
         }
         this.value = value;
         this.attendance = attendance;
@@ -22,7 +31,7 @@ public abstract class AbstractGrade implements GradedWork {
         return attendance;
     }
 
-    public String getSubject() {
+    public Subject getSubject() {
         return subject;
     }
 

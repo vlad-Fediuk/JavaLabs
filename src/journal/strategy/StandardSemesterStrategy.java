@@ -1,4 +1,9 @@
+package journal.strategy;
+
 import java.util.List;
+
+import journal.domain.grade.GradedWork;
+import journal.domain.model.Student;
 
 public class StandardSemesterStrategy implements GradingStrategy {
     @Override
@@ -16,6 +21,6 @@ public class StandardSemesterStrategy implements GradingStrategy {
 
     @Override
     public String getStrategyName() {
-        return "Стандартна семестрова (з урахуванням штрафів за пропуски)";
+        return "Стандартна семестрова (лаби зі штрафом -20% за пропуски, ваги робіт)";
     }
 }

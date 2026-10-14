@@ -1,3 +1,5 @@
+package journal.exception;
+
 public class InvalidGradeException extends JournalException {
     private final double invalidScore;
 
