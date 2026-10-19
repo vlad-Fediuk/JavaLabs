@@ -107,3 +107,29 @@ java -cp out Main
 11 - Демонстрація поліморфізму оцінок (для захисту)
 0  - Вихід
 ```
+
+
+## Lab 5: структура пакетів та патерни
+
+Вихідний код у `src/journal/`:
+
+- `domain/model`, `domain/grade` - модель (`Subject` як Value Object, `Student`, `Attendance`, ієрархія оцінок)
+- `factory` - Factory Method: `GradedWorkCreator<T>` та `RegularGradeCreator`, `LabGradeCreator`, `ExamGradeCreator`
+- `observer` - Observer: `Journal` розсилає `JournalEvent`; `AuditLogObserver`, `AcademicRiskObserver`
+- `adapter` - Adapter: `SchoolGradeAdapter` обгортає `SchoolAssessment` (12-бальна шкала, `grade12 / 12 * 100`)
+- `strategy` - Strategy (Lab 4)
+- `repository/Journal` - Subject для Observer і Context для Strategy
+- `ui/dto` - DTO-контейнери форми введення: `StudentDto`, `GradeDto`, `SchoolAssessmentDto`, `SearchCriteriaDto`
+- `ui/view` - MVP View шар: `AppView` (інтерфейс представлення), `ConsoleView` (консольна реалізація з усіма рядками та меню)
+- `ui/io` - низькорівневий I/O драйвер: `UserInterface`, `ConsoleIO`
+- `ui` - `AppController` (повністю UI-агностичний оркестратор, не містить жодного рядка тексту інтерфейсу, працює через `AppView`), `MenuCommand`
+
+Збірка і запуск:
+
+```powershell
+Remove-Item -Recurse -Force out -ErrorAction SilentlyContinue
+javac -encoding UTF-8 -d out (Get-ChildItem -Recurse src -Filter *.java).FullName
+java -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -cp out journal.Main
+```
+
+Пункт меню 12 - імпорт шкільної оцінки через Adapter.

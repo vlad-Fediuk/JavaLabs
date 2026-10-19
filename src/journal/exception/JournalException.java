@@ -1,3 +1,5 @@
+package journal.exception;
+
 import java.time.LocalDateTime;
 
 public class JournalException extends Exception {

@@ -1,11 +1,17 @@
+package journal.domain.model;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+
+import journal.domain.grade.GradedWork;
 
 public class Student implements Comparable<Student>, Auditable {
     private final String name;
     private final String group;
-    private final ArrayList<Attendance> attendances;
-    private final ArrayList<GradedWork> grades;
+    private final List<Attendance> attendances;
+    private final List<GradedWork> grades;
 
     public Student(String name, String group) {
         this.name = name;
@@ -22,12 +28,12 @@ public class Student implements Comparable<Student>, Auditable {
         return group;
     }
 
-    public ArrayList<Attendance> getAttendances() {
-        return attendances;
+    public List<Attendance> getAttendances() {
+        return Collections.unmodifiableList(attendances);
     }
 
-    public ArrayList<GradedWork> getGradedWorks() {
-        return grades;
+    public List<GradedWork> getGradedWorks() {
+        return Collections.unmodifiableList(grades);
     }
 
     public void addAttendance(Attendance attendance) {
@@ -66,7 +72,7 @@ public class Student implements Comparable<Student>, Auditable {
 
     @Override
     public String getAuditSummary() {
-        return String.format("Студент %s (%s): %d занять, %d робіт, сер. бал: %.2f",
+        return String.format("Студент %s (%s): %d занять, %d оцінок, сер. бал: %.2f",
                 name, group, attendances.size(), grades.size(), getAverageGrade());
     }
 

@@ -1,3 +1,5 @@
+package journal.exception;
+
 public class StudentNotFoundException extends JournalException {
     private final String searchTarget;
 
