@@ -5,11 +5,16 @@ import java.util.function.ToDoubleFunction;
 
 import journal.adapter.external.SchoolAssessment;
 import journal.domain.grade.AbstractGrade;
+import journal.domain.grade.DefenseLabGrade;
+import journal.domain.grade.ExamGrade;
 import journal.domain.grade.GradedWork;
+import journal.domain.grade.LabGrade;
+import journal.domain.grade.RegularGrade;
 import journal.domain.model.Attendance;
 import journal.domain.model.Student;
 import journal.domain.model.Subject;
 import journal.exception.JournalException;
+import journal.factory.DefenseLabGradeCreator;
 import journal.factory.ExamGradeCreator;
 import journal.factory.GradedWorkCreator;
 import journal.factory.LabGradeCreator;
@@ -28,7 +33,7 @@ public class ConsoleView implements AppView {
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 12;
     private static final int MIN_GRADE_KIND = 1;
-    private static final int MAX_GRADE_KIND = 3;
+    private static final int MAX_GRADE_KIND = 4;
     private static final int MIN_STRATEGY_OPTION = 1;
     private static final int MAX_STRATEGY_OPTION = 3;
 
@@ -49,7 +54,7 @@ public class ConsoleView implements AppView {
         ui.println("Поточна стратегія розрахунку: " + activeStrategyName);
         ui.println("1  - Додати студента");
         ui.println("2  - Показати всіх студентів (з балами за активною стратегією)");
-        ui.println("3  - Додати оцінку за заняття (Звичайна пара / Лабораторна / Іспит)");
+        ui.println("3  - Додати оцінку за заняття (Звичайна / Лабораторна / Іспит / Захист лаб.)");
         ui.println("4  - Показати всі оцінки студента");
         ui.println("5  - Додати відвідуваність");
         ui.println("6  - Показати відвідуваність студента");
@@ -57,7 +62,7 @@ public class ConsoleView implements AppView {
         ui.println("8  - Підсумок (студенти з підсумковим балом >= 60)");
         ui.println("9  - Пошук студента");
         ui.println("10 - Змінити стратегію оцінювання групи (Strategy Pattern)");
-        ui.println("11 - Демонстрація поліморфізму оцінок (для захисту)");
+        ui.println("11 - Демонстрація поліморфізму та ієрархії наслідування (ЛР №6)");
         ui.println("12 - Імпорт шкільної 12-бальної оцінки (Adapter Pattern)");
         ui.println("0  - Вихід");
         return ui.readLine("Оберіть опцію: ");
@@ -167,11 +172,16 @@ public class ConsoleView implements AppView {
         ui.println("1 - Звичайна пара (вимагає обов'язкової присутності)");
         ui.println("2 - Лабораторна робота (можна здати при пропуску зі штрафом -20%)");
         ui.println("3 - Іспит (підвищена вага x2.0, жорсткий поріг 60)");
+        ui.println("4 - Захист лабораторної роботи (3-й рівень ієрархії, бонус за захист)");
         int kind = ui.readInt("Ваш вибір (" + MIN_GRADE_KIND + "-" + MAX_GRADE_KIND + "): ");
         GradedWorkCreator creator = switch (kind) {
             case 1 -> new RegularGradeCreator();
             case 2 -> new LabGradeCreator(ui.readInt("Введіть номер лабораторної роботи: "));
             case 3 -> new ExamGradeCreator(ui.readInt("Введіть номер білета на іспиті: "));
+            case 4 -> new DefenseLabGradeCreator(
+                    ui.readInt("Введіть номер лабораторної роботи: "),
+                    ui.readDouble("Введіть бонус за захист (від " + DefenseLabGrade.MIN_DEFENSE_BONUS + " до "
+                            + DefenseLabGrade.MAX_DEFENSE_BONUS + "): "));
             default -> throw new JournalException("Невідомий тип заняття: " + kind);
         };
         boolean wasPresent = ui.readBoolean("Студент був присутній на занятті? (true/false, так/ні, 1/0): ");
@@ -304,5 +314,61 @@ public class ConsoleView implements AppView {
                     work.getStatusText());
         }
         ui.println("=============================================================");
+    }
+
+    @Override
+    public void displayInheritanceHierarchyDemo(
+            List<AbstractGrade> grades,
+            LabGrade baseLab,
+            LabGrade duplicateLab,
+            DefenseLabGrade subLab) {
+        ui.println("\n========== ЛР №6: ІЄРАРХІЯ НАСЛІДУВАННЯ (AbstractGrade) ==========");
+        ui.println("--- 1. Поліморфний виклик toString() через super.toString() ---");
+        for (AbstractGrade grade : grades) {
+            ui.println("  " + grade.toString());
+        }
+
+        ui.println("\n--- 2. Звернення до специфічних методів через instanceof (Pattern Matching) ---");
+        for (AbstractGrade grade : grades) {
+            String staticType = "AbstractGrade";
+            String dynamicType = grade.getClass().getSimpleName();
+            if (grade instanceof DefenseLabGrade defenseLab) {
+                ui.printf("  [Статичний: %s | Динамічний: %-16s] Лаб №%d, специфічний бонус захисту: +%.1f%n",
+                        staticType, dynamicType, defenseLab.getLabNumber(), defenseLab.getDefenseBonus());
+            } else if (grade instanceof LabGrade lab) {
+                ui.printf("  [Статичний: %s | Динамічний: %-16s] Специфічний метод getLabNumber(): №%d%n",
+                        staticType, dynamicType, lab.getLabNumber());
+            } else if (grade instanceof ExamGrade exam) {
+                ui.printf("  [Статичний: %s | Динамічний: %-16s] Специфічний метод getTicketNumber(): білет №%d%n",
+                        staticType, dynamicType, exam.getTicketNumber());
+            } else if (grade instanceof RegularGrade regular) {
+                ui.printf("  [Статичний: %s | Динамічний: %-16s] Тип роботи: %s%n",
+                        staticType, dynamicType, regular.getWorkType());
+            }
+        }
+
+        ui.println("\n--- 3. Запечатана ієрархія (sealed) та вичерпний switch без default ---");
+        for (AbstractGrade grade : grades) {
+            String details = switch (grade) {
+                case DefenseLabGrade d -> "Рівень 3 (DefenseLabGrade): лаб №" + d.getLabNumber()
+                        + ", бонус +" + d.getDefenseBonus() + ", підсумок=" + d.getEffectiveScore();
+                case LabGrade l -> "Рівень 2 (LabGrade): лаб №" + l.getLabNumber()
+                        + ", підсумок=" + l.getEffectiveScore();
+                case ExamGrade e -> "Рівень 2 (ExamGrade): білет №" + e.getTicketNumber()
+                        + ", підсумок=" + e.getEffectiveScore();
+                case RegularGrade r -> "Рівень 2 (RegularGrade): аудиторне заняття, підсумок="
+                        + r.getEffectiveScore();
+            };
+            ui.println("  " + details);
+        }
+
+        ui.println("\n--- 4. Перевірка equals(), hashCode() та симетрії (getClass vs instanceof) ---");
+        ui.printf("  baseLab.equals(duplicateLab): %b | hashCode збігається: %b%n",
+                baseLab.equals(duplicateLab), baseLab.hashCode() == duplicateLab.hashCode());
+        ui.printf("  Підхід getClass()   -> baseLab.equals(subLab): %-5b | subLab.equals(baseLab): %-5b (Симетрія збережена)%n",
+                baseLab.equals(subLab), subLab.equals(baseLab));
+        ui.printf("  Підхід instanceof -> baseLab.equalsUsingInstanceof(subLab): %-5b | subLab.equalsUsingInstanceof(baseLab): %-5b (Порушення симетрії!)%n",
+                baseLab.equalsUsingInstanceof(subLab), subLab.equalsUsingInstanceof(baseLab));
+        ui.println("==================================================================");
     }
 }
