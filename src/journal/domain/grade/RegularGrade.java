@@ -5,7 +5,7 @@ import journal.domain.model.Subject;
 import journal.exception.InvalidGradeException;
 import journal.exception.JournalException;
 
-public class RegularGrade extends AbstractGrade {
+public final class RegularGrade extends AbstractGrade {
     public static final double WEIGHT_MULTIPLIER = 1.0;
     public static final double PASSING_THRESHOLD = 60.0;
 
@@ -15,6 +15,12 @@ public class RegularGrade extends AbstractGrade {
         if (!wasPresent()) {
             throw new JournalException("Оцінка за звичайну пару не допускається, якщо студент не був присутній");
         }
+        System.out.println("  [Конструктор 2-й рівень] RegularGrade: звичайне аудиторне заняття");
+    }
+
+    public RegularGrade(Attendance attendance, Subject subject)
+            throws InvalidGradeException, JournalException {
+        this(DEFAULT_SCORE, attendance, subject);
     }
 
     @Override
@@ -30,5 +36,20 @@ public class RegularGrade extends AbstractGrade {
     @Override
     public String getWorkType() {
         return "Звичайна пара";
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " | Формат: Аудиторна робота";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

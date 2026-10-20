@@ -3,7 +3,10 @@ package journal.ui.view;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
 
+import journal.domain.grade.AbstractGrade;
+import journal.domain.grade.DefenseLabGrade;
 import journal.domain.grade.GradedWork;
+import journal.domain.grade.LabGrade;
 import journal.domain.model.Student;
 import journal.domain.model.Subject;
 import journal.exception.JournalException;
@@ -79,4 +82,10 @@ public interface AppView {
     void showStrategyChanged(String strategyName);
 
     void displayPolymorphismDemo(GradedWork[] works);
+
+    void displayInheritanceHierarchyDemo(
+            List<AbstractGrade> grades,
+            LabGrade baseLab,
+            LabGrade duplicateLab,
+            DefenseLabGrade subLab);
 }

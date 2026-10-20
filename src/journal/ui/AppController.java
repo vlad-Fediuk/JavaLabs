@@ -6,16 +6,18 @@ import java.util.Map;
 
 import journal.adapter.SchoolGradeAdapter;
 import journal.adapter.external.SchoolAssessment;
+import journal.domain.grade.AbstractGrade;
+import journal.domain.grade.DefenseLabGrade;
+import journal.domain.grade.ExamGrade;
 import journal.domain.grade.GradedWork;
+import journal.domain.grade.LabGrade;
+import journal.domain.grade.RegularGrade;
 import journal.domain.model.Attendance;
 import journal.domain.model.Student;
 import journal.domain.model.Subject;
 import journal.exception.InvalidGradeException;
 import journal.exception.JournalException;
 import journal.exception.StudentNotFoundException;
-import journal.factory.ExamGradeCreator;
-import journal.factory.LabGradeCreator;
-import journal.factory.RegularGradeCreator;
 import journal.repository.Journal;
 import journal.strategy.GradingStrategy;
 import journal.ui.command.MenuCommand;
@@ -30,6 +32,7 @@ public class AppController {
     private static final double PASSING_THRESHOLD = 60.0;
     private static final double DEMO_SCORE = 80.0;
     private static final int DEMO_LAB_NUMBER = 4;
+    private static final double DEMO_DEFENSE_BONUS = 15.0;
     private static final int DEMO_EXAM_TICKET = 12;
     private static final int DEMO_SCHOOL_GRADE = 10;
     private static final String DEMO_DATE = "27.09.26";
@@ -228,13 +231,27 @@ public class AppController {
         Attendance present = new Attendance(true, java, DEMO_DATE);
         Attendance absent = new Attendance(false, java, DEMO_DATE);
 
+        RegularGrade regularGrade = new RegularGrade(present, java);
+        LabGrade presentLab = new LabGrade(DEMO_SCORE, present, java, DEMO_LAB_NUMBER);
+        LabGrade absentLab = new LabGrade(DEMO_SCORE, absent, java);
+        DefenseLabGrade defenseLab = new DefenseLabGrade(
+                DEMO_SCORE, present, java, DEMO_LAB_NUMBER, DEMO_DEFENSE_BONUS);
+        ExamGrade examGrade = new ExamGrade(DEMO_SCORE, present, java, DEMO_EXAM_TICKET);
+        SchoolGradeAdapter schoolAdapter = new SchoolGradeAdapter(
+                new SchoolAssessment(DEMO_SCHOOL_GRADE, true, DEMO_SUBJECT_NAME), DEMO_DATE);
+
+        List<AbstractGrade> gradeHierarchy = List.of(regularGrade, presentLab, absentLab, defenseLab, examGrade);
         GradedWork[] works = {
-            new RegularGradeCreator().createGrade(DEMO_SCORE, present, java),
-            new LabGradeCreator(DEMO_LAB_NUMBER).createGrade(DEMO_SCORE, present, java),
-            new LabGradeCreator(DEMO_LAB_NUMBER).createGrade(DEMO_SCORE, absent, java),
-            new ExamGradeCreator(DEMO_EXAM_TICKET).createGrade(DEMO_SCORE, present, java),
-            new SchoolGradeAdapter(new SchoolAssessment(DEMO_SCHOOL_GRADE, true, DEMO_SUBJECT_NAME), DEMO_DATE)
+            regularGrade,
+            presentLab,
+            absentLab,
+            defenseLab,
+            examGrade,
+            schoolAdapter
         };
+        LabGrade duplicateLab = new LabGrade(DEMO_SCORE, present, java, DEMO_LAB_NUMBER);
+
         view.displayPolymorphismDemo(works);
+        view.displayInheritanceHierarchyDemo(gradeHierarchy, presentLab, duplicateLab, defenseLab);
     }
 }
