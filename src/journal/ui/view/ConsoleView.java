@@ -28,10 +28,11 @@ import journal.ui.dto.SchoolAssessmentDto;
 import journal.ui.dto.SearchCriteriaDto;
 import journal.ui.dto.StudentDto;
 import journal.ui.io.UserInterface;
+import journal.util.EntityPrinter;
 
 public class ConsoleView implements AppView {
     private static final int MIN_MENU_OPTION = 0;
-    private static final int MAX_MENU_OPTION = 12;
+    private static final int MAX_MENU_OPTION = 13;
     private static final int MIN_GRADE_KIND = 1;
     private static final int MAX_GRADE_KIND = 4;
     private static final int MIN_STRATEGY_OPTION = 1;
@@ -64,6 +65,7 @@ public class ConsoleView implements AppView {
         ui.println("10 - Змінити стратегію оцінювання групи (Strategy Pattern)");
         ui.println("11 - Демонстрація поліморфізму та ієрархії наслідування (ЛР №6)");
         ui.println("12 - Імпорт шкільної 12-бальної оцінки (Adapter Pattern)");
+        ui.println("13 - Демонстрація типізованого CRUD-сервісу та узагальнень (ЛР №7-9)");
         ui.println("0  - Вихід");
         return ui.readLine("Оберіть опцію: ");
     }
@@ -370,5 +372,75 @@ public class ConsoleView implements AppView {
         ui.printf("  Підхід instanceof -> baseLab.equalsUsingInstanceof(subLab): %-5b | subLab.equalsUsingInstanceof(baseLab): %-5b (Порушення симетрії!)%n",
                 baseLab.equalsUsingInstanceof(subLab), subLab.equalsUsingInstanceof(baseLab));
         ui.println("==================================================================");
+    }
+
+    @Override
+    public void displayCrudServiceDemo(
+            List<Student> insertedStudents,
+            Student updatedStudent,
+            int sizeAfterUpdate,
+            boolean deleteSuccess,
+            boolean deleteFailed,
+            Student foundStudent,
+            String notFoundMessage,
+            List<Subject> demoSubjects,
+            List<Student> initialStorageOrder,
+            List<Student> sortedByName,
+            List<Student> sortedByNameAndGroup,
+            List<Student> finalStorageOrder) {
+        ui.println("\n========== ЛР №7-9: ТИПІЗОВАНИЙ CRUD-СЕРВІС ТА УЗАГАЛЬНЕННЯ (Generics) ==========");
+        ui.println("--- 1. Рівень 1: Базовий CRUD над Student (save, update, delete, findById) ---");
+        ui.println("  [1.1 Додавання сутностей (save)]");
+        for (Student student : insertedStudents) {
+            ui.println("    Додано: " + student);
+        }
+        ui.println("    Кількість у сховищі після додавання: " + insertedStudents.size());
+
+        ui.println("\n  [1.2 Оновлення наявної сутності (save з тим самим ID)]");
+        ui.println("    Оновлено: " + updatedStudent);
+        ui.println("    Кількість у сховищі після оновлення: " + sizeAfterUpdate + " (розмір не збільшився)");
+
+        ui.println("\n  [1.3 Видалення сутностей (delete)]");
+        ui.println("    Успішне видалення наявного ID: " + deleteSuccess);
+        ui.println("    Неуспішне видалення неіснуючого ID: " + deleteFailed);
+
+        ui.println("\n  [1.4 Пошук за ID та обробка винятку EntityNotFoundException (findById)]");
+        ui.println("    Успішний пошук ID=" + foundStudent.getId() + ": " + foundStudent.getName() + " (" + foundStudent.getGroup() + ")");
+        ui.println("    Пошук неіснуючого ID: перехоплено виняток -> " + notFoundMessage);
+
+        ui.println("\n--- 2. Рівень 1: Універсальність InMemoryCrudService<T> з другою сутністю (Subject) ---");
+        for (Subject subject : demoSubjects) {
+            ui.println("    " + subject);
+        }
+
+        ui.println("\n--- 3. Рівень 2: Сортування та перевірка незмінності сховища ---");
+        ui.println("  [3.1 Початковий порядок у LinkedHashMap сховища]");
+        for (Student s : initialStorageOrder) {
+            ui.println("    " + s);
+        }
+
+        ui.println("\n  [3.2 Сортування за назвою: findAllSortedByName()]");
+        for (Student s : sortedByName) {
+            ui.println("    " + s);
+        }
+
+        ui.println("\n  [3.3 Вторинне сортування: findAllSortedByNameAndByGroup() (збіг за ім'ям)]");
+        for (Student s : sortedByNameAndGroup) {
+            ui.println("    " + s);
+        }
+
+        ui.println("\n  [3.4 Перевірка незмінності сховища після сортувань]");
+        for (Student s : finalStorageOrder) {
+            ui.println("    " + s);
+        }
+        boolean storageUnmodified = initialStorageOrder.equals(finalStorageOrder);
+        ui.println("    Порядок та склад сховища залишилися незмінними: " + storageUnmodified);
+
+        ui.println("\n--- 4. Рівень 3: Wildcards (? super T, ? extends BaseEntity) та printAll ---");
+        ui.println("  [4.1 printAll(Collection<? extends BaseEntity>) для списку Student]");
+        EntityPrinter.printAll(sortedByNameAndGroup);
+        ui.println("\n  [4.2 printAll(Collection<? extends BaseEntity>) для списку Subject]");
+        EntityPrinter.printAll(demoSubjects);
+        ui.println("==================================================================================");
     }
 }
