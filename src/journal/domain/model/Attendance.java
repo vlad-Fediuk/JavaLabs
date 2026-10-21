@@ -1,16 +1,23 @@
 package journal.domain.model;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class Attendance {
+public class Attendance extends BaseEntity {
+    private static final AtomicLong ID_GENERATOR = new AtomicLong(5000);
     private final boolean wasPresent;
     private final Subject subject;
     private final String date;
 
-    public Attendance(boolean wasPresent, Subject subject, String date) {
+    public Attendance(long id, boolean wasPresent, Subject subject, String date) {
+        super(id);
         this.wasPresent = wasPresent;
         this.subject = subject;
         this.date = date;
+    }
+
+    public Attendance(boolean wasPresent, Subject subject, String date) {
+        this(ID_GENERATOR.getAndIncrement(), wasPresent, subject, date);
     }
 
     public boolean isWasPresent() {
@@ -27,7 +34,7 @@ public class Attendance {
 
     @Override
     public String toString() {
-        return "Дата: " + date + " | Предмет: " + subject + " | Присутність: " + (wasPresent ? "Був" : "Не був");
+        return "Дата: " + date + " | Предмет: " + (subject != null ? subject.getName() : "N/A") + " | Присутність: " + (wasPresent ? "Був" : "Не був");
     }
 
     @Override

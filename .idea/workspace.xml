@@ -6,7 +6,24 @@
   <component name="ChangeListManager">
     <list default="true" id="59be79d9-6090-4793-b2ed-30cba53cc5e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.MD" beforeDir="false" afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/journal/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/adapter/SchoolGradeAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/adapter/SchoolGradeAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/AbstractGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/AbstractGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/DefenseLabGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/DefenseLabGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/ExamGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/ExamGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/LabGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/LabGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/RegularGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/RegularGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Attendance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/model/Attendance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/model/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Subject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/model/Subject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/exception/InvalidGradeException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/exception/InvalidGradeException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/exception/JournalException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/exception/JournalException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/exception/StudentNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/exception/StudentNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/repository/Journal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/repository/Journal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/AppController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/ui/AppController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/view/AppView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/ui/view/AppView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/view/ConsoleView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/ui/view/ConsoleView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +50,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "lr4/project-refactoring-",
+    "git-widget-placeholder": "lr7/typed-crud-service",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -52,17 +69,6 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="Labs" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="Labs" />
-      <option name="filePath" />
-      <method v="2" />
     </configuration>
   </component>
   <component name="TaskManager">

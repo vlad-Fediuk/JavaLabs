@@ -88,4 +88,18 @@ public interface AppView {
             LabGrade baseLab,
             LabGrade duplicateLab,
             DefenseLabGrade subLab);
+
+    void displayCrudServiceDemo(
+            List<Student> insertedStudents,
+            Student updatedStudent,
+            int sizeAfterUpdate,
+            boolean deleteSuccess,
+            boolean deleteFailed,
+            Student foundStudent,
+            String notFoundMessage,
+            List<Subject> demoSubjects,
+            List<Student> initialStorageOrder,
+            List<Student> sortedByName,
+            List<Student> sortedByNameAndGroup,
+            List<Student> finalStorageOrder);
 }

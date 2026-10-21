@@ -14,6 +14,13 @@ public sealed class LabGrade extends AbstractGrade permits DefenseLabGrade {
 
     private final int labNumber;
 
+    public LabGrade(long id, double value, Attendance attendance, Subject subject, int labNumber)
+            throws InvalidGradeException {
+        super(id, value, attendance, subject);
+        this.labNumber = labNumber;
+        System.out.println("  [Конструктор 2-й рівень] LabGrade: лабораторна робота №" + labNumber);
+    }
+
     public LabGrade(double value, Attendance attendance, Subject subject, int labNumber)
             throws InvalidGradeException {
         super(value, attendance, subject);

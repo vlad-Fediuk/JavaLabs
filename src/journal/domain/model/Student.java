@@ -4,22 +4,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 import journal.domain.grade.GradedWork;
 
-public class Student implements Comparable<Student>, Auditable {
+public class Student extends BaseEntity implements Nameable, Comparable<Student>, Auditable {
+    private static final AtomicLong ID_GENERATOR = new AtomicLong(1);
     private final String name;
     private final String group;
     private final List<Attendance> attendances;
     private final List<GradedWork> grades;
 
-    public Student(String name, String group) {
-        this.name = name;
-        this.group = group;
+    public Student(long id, String name, String group) {
+        super(id);
+        this.name = Objects.requireNonNull(name, "Name must not be null");
+        this.group = Objects.requireNonNull(group, "Group must not be null");
         this.attendances = new ArrayList<>();
         this.grades = new ArrayList<>();
     }
 
+    public Student(String name, String group) {
+        this(ID_GENERATOR.getAndIncrement(), name, group);
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -67,35 +75,22 @@ public class Student implements Comparable<Student>, Auditable {
 
     @Override
     public int compareTo(Student other) {
-        return Double.compare(other.getAverageGrade(), this.getAverageGrade());
+        int nameComparison = this.name.compareTo(other.name);
+        if (nameComparison != 0) {
+            return nameComparison;
+        }
+        return this.group.compareTo(other.group);
     }
 
     @Override
     public String getAuditSummary() {
-        return String.format("Студент %s (%s): %d занять, %d оцінок, сер. бал: %.2f",
-                name, group, attendances.size(), grades.size(), getAverageGrade());
+        return String.format("Студент [ID: %d] %s (%s): %d занять, %d оцінок, сер. бал: %.2f",
+                getId(), name, group, attendances.size(), grades.size(), getAverageGrade());
     }
 
     @Override
     public String toString() {
-        return String.format("Студент: %-18s | Група: %-6s | Відвідано: %2d/%-2d | Сер. бал: %5.2f | Оцінок: %2d",
-                name, group, getAttendedCount(), attendances.size(), getAverageGrade(), grades.size());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Student other = (Student) obj;
-        return Objects.equals(this.name, other.name) && Objects.equals(this.group, other.group);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, group);
+        return String.format("Студент [ID: %2d]: %-18s | Група: %-6s | Відвідано: %2d/%-2d | Сер. бал: %5.2f | Оцінок: %2d",
+                getId(), name, group, getAttendedCount(), attendances.size(), getAverageGrade(), grades.size());
     }
 }

@@ -13,6 +13,18 @@ public final class DefenseLabGrade extends LabGrade {
 
     private final double defenseBonus;
 
+    public DefenseLabGrade(long id, double value, Attendance attendance, Subject subject, int labNumber, double defenseBonus)
+            throws InvalidGradeException {
+        super(id, value, attendance, subject, labNumber);
+        if (defenseBonus < MIN_DEFENSE_BONUS || defenseBonus > MAX_DEFENSE_BONUS) {
+            throw new InvalidGradeException(
+                    "Бонус за захист має бути від " + MIN_DEFENSE_BONUS + " до " + MAX_DEFENSE_BONUS,
+                    defenseBonus);
+        }
+        this.defenseBonus = defenseBonus;
+        System.out.println("  [Конструктор 3-й рівень] DefenseLabGrade: бонус за захист +" + defenseBonus);
+    }
+
     public DefenseLabGrade(double value, Attendance attendance, Subject subject, int labNumber, double defenseBonus)
             throws InvalidGradeException {
         super(value, attendance, subject, labNumber);

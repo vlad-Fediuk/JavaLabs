@@ -9,6 +9,15 @@ public final class RegularGrade extends AbstractGrade {
     public static final double WEIGHT_MULTIPLIER = 1.0;
     public static final double PASSING_THRESHOLD = 60.0;
 
+    public RegularGrade(long id, double value, Attendance attendance, Subject subject)
+            throws InvalidGradeException, JournalException {
+        super(id, value, attendance, subject);
+        if (!wasPresent()) {
+            throw new JournalException("Оцінка за звичайну пару не допускається, якщо студент не був присутній");
+        }
+        System.out.println("  [Конструктор 2-й рівень] RegularGrade: звичайне аудиторне заняття");
+    }
+
     public RegularGrade(double value, Attendance attendance, Subject subject)
             throws InvalidGradeException, JournalException {
         super(value, attendance, subject);
