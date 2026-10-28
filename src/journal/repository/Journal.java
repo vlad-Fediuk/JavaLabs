@@ -88,9 +88,8 @@ public class Journal {
     }
 
     public Student findStudent(String name, String group) throws StudentNotFoundException {
-        Student target = new Student(name, group);
         for (Student s : students) {
-            if (target.equals(s)) {
+            if (s.getName().equalsIgnoreCase(name) && s.getGroup().equalsIgnoreCase(group)) {
                 return s;
             }
         }

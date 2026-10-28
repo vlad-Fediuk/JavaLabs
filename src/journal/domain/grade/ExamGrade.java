@@ -14,6 +14,16 @@ public final class ExamGrade extends AbstractGrade {
 
     private final int ticketNumber;
 
+    public ExamGrade(long id, double value, Attendance attendance, Subject subject, int ticketNumber)
+            throws InvalidGradeException, JournalException {
+        super(id, value, attendance, subject);
+        if (!wasPresent()) {
+            throw new JournalException("Не можна виставити оцінку за іспит, якщо студент не з'явився");
+        }
+        this.ticketNumber = ticketNumber;
+        System.out.println("  [Конструктор 2-й рівень] ExamGrade: екзаменаційний білет №" + ticketNumber);
+    }
+
     public ExamGrade(double value, Attendance attendance, Subject subject, int ticketNumber)
             throws InvalidGradeException, JournalException {
         super(value, attendance, subject);
@@ -64,6 +74,17 @@ public final class ExamGrade extends AbstractGrade {
             return false;
         }
         ExamGrade other = (ExamGrade) obj;
+        return this.ticketNumber == other.ticketNumber;
+    }
+
+    @Override
+    public boolean equalsUsingInstanceof(Object obj) {
+        if (!super.equalsUsingInstanceof(obj)) {
+            return false;
+        }
+        if (!(obj instanceof ExamGrade other)) {
+            return false;
+        }
         return this.ticketNumber == other.ticketNumber;
     }
 
