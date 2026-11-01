@@ -32,7 +32,7 @@ import journal.util.EntityPrinter;
 
 public class ConsoleView implements AppView {
     private static final int MIN_MENU_OPTION = 0;
-    private static final int MAX_MENU_OPTION = 13;
+    private static final int MAX_MENU_OPTION = 14;
     private static final int MIN_GRADE_KIND = 1;
     private static final int MAX_GRADE_KIND = 4;
     private static final int MIN_STRATEGY_OPTION = 1;
@@ -59,13 +59,14 @@ public class ConsoleView implements AppView {
         ui.println("4  - Показати всі оцінки студента");
         ui.println("5  - Додати відвідуваність");
         ui.println("6  - Показати відвідуваність студента");
-        ui.println("7  - Сортувати студентів за балом активної стратегії (Bubble Sort)");
+        ui.println("7  - Сортувати студентів за балом активної стратегії (Comparator / TimSort)");
         ui.println("8  - Підсумок (студенти з підсумковим балом >= 60)");
         ui.println("9  - Пошук студента");
         ui.println("10 - Змінити стратегію оцінювання групи (Strategy Pattern)");
         ui.println("11 - Демонстрація поліморфізму та ієрархії наслідування (ЛР №6)");
         ui.println("12 - Імпорт шкільної 12-бальної оцінки (Adapter Pattern)");
         ui.println("13 - Демонстрація типізованого CRUD-сервісу та узагальнень (ЛР №7-9)");
+        ui.println("14 - Демонстрація JDBC сховища, пулу з'єднань та транзакцій (ЛР №10)");
         ui.println("0  - Вихід");
         return ui.readLine("Оберіть опцію: ");
     }
@@ -255,7 +256,7 @@ public class ConsoleView implements AppView {
 
     @Override
     public void displayStudentsAfterSorting(List<Student> students, ToDoubleFunction<Student> scoreCalculator) {
-        ui.println("\nМасив ПІСЛЯ Bubble Sort (за спаданням балу активної стратегії):");
+        ui.println("\nМасив ПІСЛЯ сортування (Comparator / TimSort за спаданням балу активної стратегії):");
         displayAllStudents(students, scoreCalculator);
     }
 
@@ -441,6 +442,45 @@ public class ConsoleView implements AppView {
         EntityPrinter.printAll(sortedByNameAndGroup);
         ui.println("\n  [4.2 printAll(Collection<? extends BaseEntity>) для списку Subject]");
         EntityPrinter.printAll(demoSubjects);
+        ui.println("==================================================================================");
+    }
+
+    @Override
+    public void displayJdbcDemo(journal.service.EducationalAnalyticsService.JdbcDemoResult result) {
+        ui.println("\n==================================================================================");
+        ui.println("=== ДЕМОНСТРАЦІЯ JDBC СХОВИЩА, ПУЛУ З'ЄДНАНЬ ТА ТРАНЗАКЦІЙ (ЛР №10) ===");
+        ui.println("==================================================================================");
+
+        ui.println("\n--- 1. Рівень 1: Підключення до БД (Singleton DBConnection + HikariCP) ---");
+        ui.println("  Статус активного з'єднання з БД: " + (result.connectionActive() ? "АКТИВНЕ" : "ПОМИЛКА"));
+        ui.println("  Збережений студент: " + result.insertedStudent());
+        ui.println("  Пов'язані оцінки студента (FOREIGN KEY):");
+        for (journal.domain.model.GradeRecord grade : result.insertedGrades()) {
+            ui.println("    " + grade);
+        }
+
+        ui.println("\n--- 2. Рівень 2: Зв'язані сутності, ON DELETE CASCADE та транзакції ---");
+        ui.println("  Транзакція реєстрації студента з оцінками (COMMIT): " + (result.transactionCommitSuccess() ? "УСПІШНО" : "НЕВДАЛО"));
+        ui.println("  Транзакція при помилці з повним відкатом (ROLLBACK): " + (result.transactionRollbackSuccess() ? "ВІДКАТ ПІДТВЕРДЖЕНО" : "НЕВДАЛО"));
+        ui.println("  Каскадне видалення (ON DELETE CASCADE) при видаленні студента: " + (result.cascadeDeleteSuccess() ? "ПІДТВЕРДЖЕНО" : "НЕВДАЛО"));
+
+        ui.println("\n--- 3. Рівень 3: Посторінковий вивід (LIMIT / OFFSET) ---");
+        ui.println("  Сторінка 1 (LIMIT 3 OFFSET 0):");
+        for (Student s : result.pagedStudentsPage1()) {
+            ui.println("    " + s);
+        }
+        ui.println("  Сторінка 2 (LIMIT 3 OFFSET 3):");
+        for (Student s : result.pagedStudentsPage2()) {
+            ui.println("    " + s);
+        }
+
+        ui.println("\n--- 4. Рівень 3: Бенчмарк пакетної вставки (Batch Insert vs Single Insert) ---");
+        ui.println("  Час вставки по одному запису (300 записів): " + result.singleInsertTimeMs() + " мс");
+        ui.println("  Час пакетної вставки addBatch/executeBatch (300 записів): " + result.batchInsertTimeMs() + " мс");
+
+        ui.println("\n--- 5. Рівень 2/3: Безпека (Statement vs PreparedStatement) ---");
+        ui.println("  Спроба SQL-ін'єкції (' OR '1'='1) через звичайний Statement: знайдено " + result.statementVulnerableCount() + " записів (ВРАЗЛИВІСТЬ!)");
+        ui.println("  Спроба SQL-ін'єкції (' OR '1'='1) через PreparedStatement: знайдено " + result.preparedStatementSafeCount() + " записів (БЕЗПЕЧНО)");
         ui.println("==================================================================================");
     }
 }

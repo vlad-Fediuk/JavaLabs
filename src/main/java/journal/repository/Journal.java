@@ -2,7 +2,9 @@ package journal.repository;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import journal.domain.grade.GradedWork;
 import journal.domain.model.Attendance;
@@ -10,11 +12,13 @@ import journal.domain.model.Student;
 import journal.exception.StudentNotFoundException;
 import journal.observer.JournalEvent;
 import journal.observer.JournalObserver;
+import journal.service.JdbcStudentService;
+import journal.service.StudentService;
 import journal.strategy.GradingStrategy;
 import journal.strategy.StandardSemesterStrategy;
 
 public class Journal {
-    private final List<Student> students;
+    private final StudentService studentService;
     private final List<JournalObserver> observers;
     private GradingStrategy gradingStrategy;
 
@@ -23,9 +27,13 @@ public class Journal {
     }
 
     public Journal(GradingStrategy gradingStrategy) {
-        this.students = new ArrayList<>();
+        this(gradingStrategy, new JdbcStudentService());
+    }
+
+    public Journal(GradingStrategy gradingStrategy, StudentService studentService) {
+        this.gradingStrategy = Objects.requireNonNull(gradingStrategy, "Grading strategy must not be null");
+        this.studentService = Objects.requireNonNull(studentService, "Student service must not be null");
         this.observers = new ArrayList<>();
-        this.gradingStrategy = gradingStrategy;
     }
 
     public void registerObserver(JournalObserver observer) {
@@ -36,7 +44,7 @@ public class Journal {
         observers.remove(observer);
     }
 
-    private void notifyObservers(JournalEvent event) {
+    public void notifyObservers(JournalEvent event) {
         for (JournalObserver observer : new ArrayList<>(observers)) {
             observer.onEvent(event);
         }
@@ -53,7 +61,7 @@ public class Journal {
     }
 
     public void addStudent(Student student) {
-        students.add(student);
+        studentService.save(student);
         notifyObservers(new JournalEvent(JournalEvent.EventType.STUDENT_ADDED, student, null));
     }
 
@@ -68,19 +76,19 @@ public class Journal {
     }
 
     public List<Student> getStudents() {
-        return Collections.unmodifiableList(students);
+        return studentService.findAll();
     }
 
     public boolean isEmpty() {
-        return students.isEmpty();
+        return getStudents().isEmpty();
     }
 
     public int size() {
-        return students.size();
+        return getStudents().size();
     }
 
     public Student get(int index) {
-        return students.get(index);
+        return getStudents().get(index);
     }
 
     public double calculateStudentScore(Student student) {
@@ -88,7 +96,10 @@ public class Journal {
     }
 
     public Student findStudent(String name, String group) throws StudentNotFoundException {
-        for (Student s : students) {
+        if (studentService instanceof JdbcStudentService jdbcStudentService) {
+            return jdbcStudentService.findByNameAndGroup(name, group);
+        }
+        for (Student s : getStudents()) {
             if (s.getName().equalsIgnoreCase(name) && s.getGroup().equalsIgnoreCase(group)) {
                 return s;
             }
@@ -96,28 +107,16 @@ public class Journal {
         throw new StudentNotFoundException("Студента не знайдено в базі даних", name + " (" + group + ")");
     }
 
-    public void bubbleSortByStrategyScore() {
-        int n = students.size();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                double score1 = calculateStudentScore(students.get(j));
-                double score2 = calculateStudentScore(students.get(j + 1));
-                if (score1 < score2) {
-                    Student temp = students.get(j);
-                    students.set(j, students.get(j + 1));
-                    students.set(j + 1, temp);
-                }
-            }
-        }
-    }
-
-    public void sortUsingComparable() {
-        Collections.sort(students);
+    public List<Student> sortStudentsByStrategy(List<Student> students) {
+        List<Student> sorted = new ArrayList<>(students);
+        sorted.sort(Comparator.comparingDouble(this::calculateStudentScore).reversed()
+                .thenComparing(Student::getName));
+        return Collections.unmodifiableList(sorted);
     }
 
     public int countPassedStudents(double threshold) {
         int count = 0;
-        for (Student s : students) {
+        for (Student s : getStudents()) {
             if (calculateStudentScore(s) >= threshold) {
                 count++;
             }

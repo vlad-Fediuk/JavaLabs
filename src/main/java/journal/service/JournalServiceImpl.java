@@ -33,8 +33,7 @@ public class JournalServiceImpl implements JournalService {
 
     @Override
     public List<Student> getStudentsSortedByActiveStrategy() {
-        journal.bubbleSortByStrategyScore();
-        return journal.getStudents();
+        return journal.sortStudentsByStrategy(journal.getStudents());
     }
 
     @Override

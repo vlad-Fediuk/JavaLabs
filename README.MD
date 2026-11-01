@@ -1,6 +1,172 @@
 # Student Journal
 
-Консольний застосунок для ведення студентського журналу. Проєкт реалізує типізований generic CRUD-сервіс для сутностей предметної області з гнучким сортуванням та збереженням у колекціях (Лабораторна робота №7–9), багаторівневу запечатану (`sealed`) ієрархію класів оцінюваних робіт на основі принципів наслідування (Лабораторна робота №6), архітектуру MVP та патерни проєктування Strategy, Factory Method, Observer і Adapter (ЛР №4–5).
+Консольний застосунок для ведення студентського журналу. Проєкт реалізує роботу з реляційними СУБД PostgreSQL та H2 через JDBC API, пул з'єднань HikariCP, патерн Template Method для узагальнених JDBC-сервісів, ACID-транзакції та пакетну вставку (Лабораторна робота №10), типізований generic CRUD-сервіс для сутностей предметної області з гнучким сортуванням та збереженням у колекціях (Лабораторна робота №7–9), багаторівневу запечатану (`sealed`) ієрархію класів оцінюваних робіт на основі принципів наслідування (Лабораторна робота №6), архітектуру MVP та патерни проєктування Strategy, Factory Method, Observer і Adapter (ЛР №4–5).
+
+---
+
+## Лабораторна робота №10: Maven як інструмент побудови проєкту. Робота з реляційною БД через JDBC (Високий рівень)
+
+### 1. Архітектура реляційної бази даних та ER-діаграма (п. 3, 7, 13)
+
+У проєкті реалізовано реляційну схему даних з первинними ключами (`PRIMARY KEY`), обмеженнями цілісності (`NOT NULL`, `CHECK`, `UNIQUE`) та зовнішніми ключами (`FOREIGN KEY`):
+
+```mermaid
+erDiagram
+    STUDENTS ||--o{ GRADES : "has many"
+    SUBJECTS ||--o{ GRADES : "referenced in"
+
+    STUDENTS {
+        bigint id PK
+        varchar_100 name "NOT NULL, CHECK non-empty"
+        varchar_50 student_group "NOT NULL, CHECK non-empty"
+    }
+
+    SUBJECTS {
+        bigint id PK
+        varchar_100 name "NOT NULL, UNIQUE, CHECK non-empty"
+        int credits "NOT NULL, CHECK > 0"
+    }
+
+    GRADES {
+        bigint id PK
+        bigint student_id FK "NOT NULL, ON DELETE CASCADE"
+        varchar_100 subject_name "NOT NULL, CHECK non-empty"
+        varchar_50 work_type "NOT NULL, CHECK non-empty"
+        numeric_5_2 score "NOT NULL, CHECK 0..100"
+        varchar_20 work_date "NOT NULL, CHECK non-empty"
+    }
+```
+
+### 2. Стратегія цілісності зовнішніх ключів: `ON DELETE CASCADE` (п. 7)
+
+Між таблицями `students` (батьківська таблиця) та `grades` (дочірня таблиця) встановлено зв'язок «один до багатьох» (1:N) за допомогою зовнішнього ключа:
+```sql
+CONSTRAINT fk_grades_student FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+```
+
+**Обґрунтування вибору `ON DELETE CASCADE`**:
+1. **Предметна сутність**: оцінка в журналі (`GradeRecord`) є невіддільною від студента, який її отримав. Оцінка не має самостійного бізнес-значення без прив'язки до студента.
+2. **Запобігання "осиротілим" записам**: якби використовувався `SET NULL`, у таблиці з'явилися б безіменні оцінки без власника, що суперечить доменній моделі (`student_id NOT NULL`).
+3. **Автоматична узгодженість**: при відрахуванні студента з академії його академічні записи про оцінки автоматично видаляються СКБД в одній транзакції без потреби писати ручні каскадні видалення на стороні Java.
+
+### 3. Патерн Template Method у `AbstractJdbcCrudService<T extends BaseEntity>` (п. 11, Рівень 3)
+
+Спільна логіка виконання JDBC-запитів, відкриття та закриття ресурсів (`Connection`, `PreparedStatement`, `ResultSet`), мапінгу та пагінації винесена в абстрактний клас `AbstractJdbcCrudService<T>`:
+
+- **Методи-каркаси (Template Methods)**:
+  - `findById(long id)`: отримує з'єднання, встановлює ID у `PreparedStatement`, викликає хук `mapRow(rs)`, або генерує `EntityNotFoundException`.
+  - `save(T entity)`: перевіряє `existsById(id)`, скеровуючи виконання у метод `insert(entity)` або `update(entity)`.
+  - `delete(long id)`: готує `DELETE` запит та повертає статус видалення.
+  - `findAll()`: циклічно ітерує `ResultSet` і мапить рядки через `mapRow`.
+  - `findAllPaged(int limit, int offset)`: формує вибірку із `LIMIT ? OFFSET ?`.
+  - `saveBatch(List<T> entities)`: пакетна вставка через `addBatch()` та `executeBatch()` в межах атомарної транзакції.
+- **Абстрактні хуки (Hook Methods), які реалізують підкласи**:
+  - `getFindByIdSql()`, `getInsertSql()`, `getUpdateSql()`, `getDeleteSql()`, `getFindAllSql()`, `getFindAllPagedSql()`, `getExistsByIdSql()`.
+  - `T mapRow(ResultSet rs) throws SQLException` — мапінг реляційного рядка на конкретний POJO.
+  - `setInsertParameters(PreparedStatement ps, T entity)` та `setUpdateParameters(PreparedStatement ps, T entity)` — прив'язка типізованих параметрів.
+
+Підкласи `JdbcStudentService` та `JdbcGradeRecordService` реалізують лише специфічні для сутності SQL-запити та мапери, повністю усуваючи дублювання інфраструктурного JDBC коду.
+
+### 4. Аналіз патерну Singleton: одне з'єднання vs пул з'єднань HikariCP (п. 12, Рівень 3)
+
+У класі `DBConnection` реалізовано потокобезпечний **Singleton**, що тримає пул з'єднань **`HikariDataSource`**, а не один спільний об'єкт `Connection`.
+
+#### Чому один спільний `Connection` на весь застосунок — це критична проблема:
+1. **Багатопотоковість і стан (Race Conditions)**: екземпляр `Connection` у JDBC не є потокобезпечним. Якщо декілька потоків одночасно намагаються створити `Statement` або змінити стан автокоміту (`setAutoCommit`), це призводить до аварійного стану сесії та спотворення даних.
+2. **Інтерлівінг транзакцій (Transaction Cross-contamination)**: якщо Потік 1 вимикає `autoCommit` і виконує операції, а Потік 2 викликає `commit()`, транзакція Потоку 1 буде зафіксована достроково і неконтрольовано.
+3. **Обрив з'єднання**: якщо мережеве з'єднання або сокет БД закривається (таймаут, перезапуск СКБД), єдиний об'єкт `Connection` перетворюється на "мертвий" об'єкт, і застосунок повністю зупиняє роботу.
+
+**Переваги обраного рішення `DBConnection` з `HikariCP`**:
+- `DBConnection.getInstance().getConnection()` виділяє кожному потоку **ізольоване активне з'єднання** з пулу.
+- Пул автоматично перевіряє валідність з'єднань (`connectionTestQuery`), відновлює розірвані сесії та контролює максимальну кількість з'єднань (`maximumPoolSize=10`), запобігаючи перевантаженню СКБД.
+
+### 5. Бенчмарк пакетної вставки: `addBatch/executeBatch` vs одиночні `INSERT` (п. 13, Рівень 3)
+
+Проведено експериментальне вимірювання часу виконання для 1000 записів студентів на платформі H2 Database:
+
+| Режим вставки | Кількість записів | Час виконання (мс) | Прискорення |
+| :--- | :---: | :---: | :---: |
+| **Одиночні вставки (`save` по одному)** | 1000 | **313 мс** | 1.0x (Базовий) |
+| **Пакетна вставка (`saveBatch` / `addBatch`)** | 1000 | **22 мс** | **~14.2x прискорення** |
+
+**Чому пакетна вставка в рази швидша**:
+1. **Мінімізація мережевих кругових затримок (Network Round-trips)**: замість 1000 окремих мережевих пакетів та запитів до драйвера, команди групуються в один спільний буфер і відправляються до рушія БД за один цикл.
+2. **Оптимізація транзакційного журналу (WAL / Undo Log)**: пакетна вставка виконується в межах однієї транзакції з єдиним фінальним `commit()`, що уникає тисячі примусових скидань журналу транзакцій на диск (`fsync`).
+
+### 6. Посторінкове читання (`LIMIT/OFFSET`) та аналіз небезпеки `findAll()` (п. 14, Рівень 3)
+
+В `AbstractJdbcCrudService` додано метод:
+```java
+public List<T> findAllPaged(int limit, int offset);
+```
+SQL-шаблон: `SELECT id, name, student_group FROM students ORDER BY id ASC LIMIT ? OFFSET ?`.
+
+#### Чому `findAll()` без обмежень небезпечний на великій таблиці:
+1. **Вичерпання пам'яті (`java.lang.OutOfMemoryError: Java heap space`)**: завантаження таблиці на мільйони рядків створює мільйони POJO-об'єктів у Heap.
+2. **Stop-The-World паузи Garbage Collector**: масивна генерація короткоживучих та довгоживучих об'єктів перевантажує збирач сміття, призводячи до тривалих "зависань" застосунку.
+3. **Мережеве навантаження та блокування**: передача гігабайтів даних через сокет забиває канал і тримає блокування читання або розділені ресурси на рівні таблиці.
+
+### 7. Аналіз безпеки та SQL-ін'єкція: `Statement` проти `PreparedStatement` (п. 12, Рівень 2)
+
+#### Демонстрація атаки через зклеювання рядків у `Statement` (Вразливий код):
+```java
+String query = "SELECT id, name, student_group FROM students WHERE name = '" + userInput + "'";
+```
+Якщо зловмисник вводить `userInput = "' OR '1'='1"`, результуючий SQL-запит стає:
+```sql
+SELECT id, name, student_group FROM students WHERE name = '' OR '1'='1'
+```
+Оскільки умова `'1'='1'` завжди істинна (`tautology`), запит повертає **абсолютно всі записи студентів**, повністю обходячи авторизаційні або фільтраційні обмеження.
+
+#### Безпечне виконання через `PreparedStatement`:
+```java
+String query = "SELECT id, name, student_group FROM students WHERE name = ?";
+PreparedStatement statement = connection.prepareStatement(query);
+statement.setString(1, userInput);
+```
+**Чому `PreparedStatement` неуразливий**:
+- Текст запиту компілюється синтаксичним аналізатором СКБД **до** підстановки значень параметрів.
+- Значення `"' OR '1'='1"` передається як бінарний літерал даних. Драйвер та СКБД трактують його виключно як пошуковий текст у полі `name`, а не як частину SQL-команд. Результат пошуку — 0 записів (як і належить).
+- Ручне екранування лапок є недостатнім, оскільки не захищає від ін'єкцій у числових полях (`WHERE id = " + id`), ін'єкцій у кодуваннях символів або системних функціях.
+
+---
+
+## Інструкція запуску проєкту через Maven
+
+### Налаштування підключення до PostgreSQL (`src/main/resources/application.properties`):
+```properties
+db.url=jdbc:postgresql://localhost:5432/journaldb
+db.username=postgres
+db.password=1111
+db.pool.maximumPoolSize=10
+db.pool.minimumIdle=2
+db.pool.idleTimeout=30000
+db.pool.connectionTimeout=10000
+```
+
+> **Примітка**: Таблиці бази даних створюються автоматично при першому запуску програми завдяки ідемпотентному скрипту `src/main/resources/init.sql` та класу `DatabaseInitializer`.
+
+### Збирання проєкту:
+```powershell
+mvn compile
+```
+
+### Запуск тестів (14 тестів: CRUD, сортування, транзакції, пагінація, бенчмарк, SQL Injection):
+```powershell
+mvn test
+```
+
+### Запуск програми:
+```powershell
+mvn exec:java
+```
+
+### Запуск зібраного JAR-файлу:
+```powershell
+mvn package
+java -jar target/student-journal-1.0.0.jar
+```
+
 
 ---
 
@@ -414,12 +580,13 @@ Get-Content ..\..\work\demo_input.txt | java "-Dfile.encoding=UTF-8" "-Dsun.stdo
 4  - Показати всі оцінки студента
 5  - Додати відвідуваність
 6  - Показати відвідуваність студента
-7  - Сортувати студентів за балом активної стратегії (Bubble Sort)
+7  - Сортувати студентів за балом активної стратегії (Comparator / TimSort)
 8  - Підсумок (студенти з підсумковим балом >= 60)
 9  - Пошук студента
 10 - Змінити стратегію оцінювання групи (Strategy Pattern)
 11 - Демонстрація поліморфізму та ієрархії наслідування (ЛР №6)
 12 - Імпорт шкільної 12-бальної оцінки (Adapter Pattern)
 13 - Демонстрація типізованого CRUD-сервісу та узагальнень (ЛР №7-9)
+14 - Демонстрація JDBC сховища, пулу з'єднань та транзакцій (ЛР №10)
 0  - Вихід
 ```
