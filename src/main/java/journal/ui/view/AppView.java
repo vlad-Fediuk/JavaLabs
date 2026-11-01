@@ -102,4 +102,6 @@ public interface AppView {
             List<Student> sortedByName,
             List<Student> sortedByNameAndGroup,
             List<Student> finalStorageOrder);
+
+    void displayJdbcDemo(journal.service.EducationalAnalyticsService.JdbcDemoResult result);
 }

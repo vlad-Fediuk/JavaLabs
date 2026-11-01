@@ -4,6 +4,7 @@ import java.util.List;
 
 import journal.domain.grade.AbstractGrade;
 import journal.domain.grade.GradedWork;
+import journal.domain.model.GradeRecord;
 import journal.domain.model.Student;
 import journal.domain.model.Subject;
 import journal.exception.JournalException;
@@ -14,6 +15,8 @@ public interface EducationalAnalyticsService {
     List<AbstractGrade> prepareInheritanceHierarchyDemo() throws JournalException;
 
     CrudDemoResult executeCrudLabDemo();
+
+    JdbcDemoResult executeJdbcLabDemo();
 
     record CrudDemoResult(
             List<Student> insertedStudents,
@@ -28,5 +31,20 @@ public interface EducationalAnalyticsService {
             List<Student> sortedByName,
             List<Student> sortedByNameAndGroup,
             List<Student> finalStorageOrder
+    ) {}
+
+    record JdbcDemoResult(
+            boolean connectionActive,
+            Student insertedStudent,
+            List<GradeRecord> insertedGrades,
+            boolean transactionCommitSuccess,
+            boolean transactionRollbackSuccess,
+            boolean cascadeDeleteSuccess,
+            List<Student> pagedStudentsPage1,
+            List<Student> pagedStudentsPage2,
+            long singleInsertTimeMs,
+            long batchInsertTimeMs,
+            int statementVulnerableCount,
+            int preparedStatementSafeCount
     ) {}
 }

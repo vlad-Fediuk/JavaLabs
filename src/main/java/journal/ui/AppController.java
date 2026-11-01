@@ -72,6 +72,7 @@ public class AppController {
         commands.put(11, this::demonstratePolymorphism);
         commands.put(12, this::importSchoolAssessment);
         commands.put(13, this::demonstrateCrudService);
+        commands.put(14, this::demonstrateJdbcService);
     }
 
     public void run() {
@@ -260,5 +261,10 @@ public class AppController {
                 result.sortedByName(),
                 result.sortedByNameAndGroup(),
                 result.finalStorageOrder());
+    }
+
+    private void demonstrateJdbcService() {
+        EducationalAnalyticsService.JdbcDemoResult result = analyticsService.executeJdbcLabDemo();
+        view.displayJdbcDemo(result);
     }
 }

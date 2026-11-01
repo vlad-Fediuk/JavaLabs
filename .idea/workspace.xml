@@ -5,25 +5,66 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59be79d9-6090-4793-b2ed-30cba53cc5e9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.MD" beforeDir="false" afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/adapter/SchoolGradeAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/adapter/SchoolGradeAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/AbstractGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/AbstractGrade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/DefenseLabGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/DefenseLabGrade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/ExamGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/ExamGrade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/LabGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/LabGrade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/RegularGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/grade/RegularGrade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Attendance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/model/Attendance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/model/Student.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Subject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/domain/model/Subject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/exception/InvalidGradeException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/exception/InvalidGradeException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/exception/JournalException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/exception/JournalException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/exception/StudentNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/exception/StudentNotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/repository/Journal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/repository/Journal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/ui/AppController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/ui/AppController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/ui/view/AppView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/ui/view/AppView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/journal/ui/view/ConsoleView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/journal/ui/view/ConsoleView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/adapter/SchoolGradeAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/adapter/SchoolGradeAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/adapter/external/SchoolAssessment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/adapter/external/SchoolAssessment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/AbstractGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/grade/AbstractGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/DefenseLabGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/grade/DefenseLabGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/ExamGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/grade/ExamGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/GradedWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/grade/GradedWork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/LabGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/grade/LabGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/grade/RegularGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/grade/RegularGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Attendance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/model/Attendance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Auditable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/model/Auditable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/BaseEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/model/BaseEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Nameable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/model/Nameable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/model/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/domain/model/Subject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/domain/model/Subject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/exception/EntityNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/exception/EntityNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/exception/InvalidGradeException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/exception/InvalidGradeException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/exception/JournalException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/exception/JournalException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/exception/StudentNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/exception/StudentNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/factory/DefenseLabGradeCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/factory/DefenseLabGradeCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/factory/ExamGradeCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/factory/ExamGradeCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/factory/GradedWorkCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/factory/GradedWorkCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/factory/LabGradeCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/factory/LabGradeCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/factory/RegularGradeCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/factory/RegularGradeCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/observer/AcademicRiskObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/observer/AcademicRiskObserver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/observer/AuditLogObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/observer/AuditLogObserver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/observer/JournalEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/observer/JournalEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/observer/JournalObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/observer/JournalObserver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/repository/Journal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/repository/Journal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/AssessmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/AssessmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/AssessmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/AssessmentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/CRUDService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/CRUDService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/EducationalAnalyticsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/EducationalAnalyticsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/EducationalAnalyticsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/EducationalAnalyticsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/InMemoryCrudService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/InMemoryCrudService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/InMemoryStudentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/InMemoryStudentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/JournalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/JournalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/JournalServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/JournalServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/NameableCRUDService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/NameableCRUDService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/StudentManagementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/StudentManagementService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/StudentManagementServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/StudentManagementServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/service/StudentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/service/StudentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/strategy/AmnestyStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/strategy/AmnestyStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/strategy/ExamPriorityStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/strategy/ExamPriorityStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/strategy/GradingStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/strategy/GradingStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/strategy/StandardSemesterStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/strategy/StandardSemesterStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/AppController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/AppController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/command/MenuCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/command/MenuCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/dto/GradeDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/dto/GradeDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/dto/SchoolAssessmentDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/dto/SchoolAssessmentDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/dto/SearchCriteriaDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/dto/SearchCriteriaDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/dto/StudentDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/dto/StudentDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/io/ConsoleIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/io/ConsoleIO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/io/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/io/UserInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/view/AppView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/view/AppView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/ui/view/ConsoleView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/ui/view/ConsoleView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/journal/util/EntityPrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/journal/util/EntityPrinter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,8 +91,9 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "lr7/typed-crud-service",
+    "git-widget-placeholder": "lr10/Add-maven-and-jdbc",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/MyFiles/College/Java/result/Labs",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",

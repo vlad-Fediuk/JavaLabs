@@ -19,13 +19,23 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# virtual machine crash logs
 hs_err_pid*
 replay_pid*
-.idea/misc.xml
-.idea/modules.xml
-.idea/runConfigurations/Main.xml
-.idea/workspace.xml
-.idea/workspace.xml
-.idea/workspace.xml
+
+# Maven & Build artifacts
+target/
+out/
+
+# Database files
+data/
+*.mv.db
+*.trace.db
+
+# IDE files
+.idea/
+*.iml
+
+# XML files except pom.xml
 *.xml
+!pom.xml
